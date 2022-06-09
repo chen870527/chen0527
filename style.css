@@ -1,0 +1,758 @@
+:root {
+    --canvas-width :885px;
+    --canvas-height: 435px;
+    --background-color:rgb(176, 154, 154);
+    --black-color :rgb(106, 164, 240);
+    --text-color:#9e78d7;
+    --text-background-color:rgba(255,255,255,1);
+    --input-thumb-size: 8px;
+    --input-thumb-size-small:5px;
+    --border-width:8px;
+    --bright-green:rgba(127,246,102,1);
+
+    --shadow:0 8px 12px 0 rgba(0,0,0,0.8), 0 12px 25px 0 rgba(0,0,0,0.7);
+
+    --no-shadow:0 8px 12px 0 rgba(0,0,0,0), 0 12px 25px 0 rgba(0,0,0,0); 
+}
+
+
+
+
+* {             /*星號標誌會指向頁面上所有的元素。 */   
+    font-family: 'Press Start 2P',cursive;  /* 字體 */
+    font-size: 16px;            /* 文字大小 */   
+    user-select: none;      /*控制用户能否选中文本*/
+}      
+
+html{ 
+    height: 100%;
+    width: 100%;
+}
+
+
+body {
+    font-family: helvetica,Arial, Helvetica, sans-serif;
+    margin:0 auto 0 auto;   /* 上 右 下 左 */ 
+    background-color: var(--background-color); /* 從 :root 拿*/
+
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;        /* 這邊??*/
+    justify-content: center;
+    padding: 2rem;
+
+}
+
+#container{         /*加#號鍵可以允許我們指向id*/
+    width: 100%;    
+    max-width: 900px;
+}
+
+
+h3{         /*html h3的size*/
+    font-size: 1.2rem;         /* Master 標題那些*/
+}
+
+button{
+    font-size:1rem;
+}
+
+p{
+    margin: 100;
+}
+span,           /* 這幹嘛? */
+p,
+option,
+label{
+    font-size: 0.8rem;
+}
+
+
+
+select{
+    font-size: 0.6rem;
+    padding: 0.2rem;
+    border: solid var(--black-color)0.25rem;
+}
+
+input{
+    font-size: 0.8rem;
+    height: var(--input-thumb-size);
+}
+
+
+iframe {            /* 看無 */
+    pointer-events: none;
+}
+
+#title{        /*Lofi Player */                
+    font-style: italic;
+    width: 420px;
+    font-size: 1.9rem;
+    color: var(--text-color);
+    background-color: var(--text-background-color);
+    border:solid var(--text-color) var(--border-width);
+    padding: 0.5rem;
+    margin: 0 0 1rem 0;
+}
+
+
+
+button{
+    color: var(--text-color);
+    background-color: var(--text-background-color);
+    border: groove var(--text-color) var(--border-width);    
+} /*  solid實線 groove 凸線*/
+
+
+.small-button {         /*.X 這是一個class選擇器。 id和class的不同點就是class可以同時標記多個元素。*/
+    width: 60px;
+    height: 25px;
+    font-size: 0.7rem;
+    padding: 0;
+  }    
+
+
+  #control-div{
+    display: none;           
+    align-items: stretch;
+    align-items: stretch;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: 100%;
+
+}  
+
+
+#control-div .block {
+    margin: 10px 15px 10px 0;
+    min-width: 250px;
+    min-height: 120px;
+    border: solid var(--text-color) var(--border-width);
+
+    color: var(--text-color);
+    background-color: var(--text-background-color);
+}     
+
+
+#mixing-div{
+    display: none;
+}
+
+
+
+
+#background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: -1;      
+}
+
+/*position: fixed 固定(滑動也不會動) relative 本來應該顯示的地方去作偏移*/
+/* absolute 跟fixed 很像 但不會滑動 外層如果有定位的話，會根據外層去絕對定位*/
+#main-canvas{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+
+#canvas-div {
+    position: relative;
+    width: 100%;
+    padding-top: 48%;
+    border: double var(--text-color) var(--border-width);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+
+#canvas-overlay {       /* 一開始的Lofi */
+    
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.95);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }        
+  
+  #melody-panel-div {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+  
+    /* display: flex; */
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+
+  #melody-panel{
+    position: relative;
+    background-color: var(--text-background-color);
+    border: solid var(--text-color) var(--border-width);
+    width: 65%;
+    height: 80%;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow :hidden;  /*這幹嘛的??*/
+
+}
+
+
+#melody-panel-close {
+    top: 0;
+    right: 0;
+    padding: 0.8rem
+}
+
+
+
+#melody-panel-right {
+    display: none;
+    top: 40%;
+    right: 5px;
+}
+
+
+#melody-panel-left{
+    display: none;
+    top:40%;
+    left: 5px;
+}
+
+
+
+.melody-panel-button {
+    font-size: 2rem;
+    padding: 0;
+    position: absolute;
+    opacity: 0.7;
+
+    color: rgb(0, 0, 0, 1);
+    border: none;
+    background-color: transparent;
+}
+
+
+
+.melody-panel-button:hover {       /*hover 最常被使用的地方，當滑鼠移至超連結時，不論是文字變色、位移、換背景都是利用 hover 達到以下CSS範例是滑鼠移至網誌標題時，網誌標題顏色變成桃紅色並且往右下位移*/
+    opacity: 1;             
+}
+
+
+.panel {                /* 所有的控制面板*/
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+    padding: 2rem 3rem;
+}
+
+
+
+.panel h3 {         /*h3的字體大小*/
+    font-size: 1rem;
+}
+
+
+.panel label {
+    min-width: 8rem;
+    margin-right: 1rem;
+}
+
+
+.panel-control-div div {
+    margin: 0.7rem 0;
+    display: flex;
+    align-items: center;
+  }
+
+  /*
+  #interpolation-div {
+    padding: 1.5rem 1.2rem;
+    text-align: center;
+  }
+
+  #interpolation-div p,
+#interpolation-div a {
+  width: 80%;
+  font-size: 0.6rem;
+}
+#interpolation-div select {
+  font-size: 0.6rem;
+  margin: 0 0.5rem;
+}
+#interpolation-div {
+  display: flex;
+  align-items: center;
+}
+#interpolation-div div {
+  margin: 0.5rem 0 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#interpolation-div canvas {
+  margin-top: 0.5rem;
+  width: 100%;
+  height: 30%;
+}*/
+
+
+
+.circle {
+    position: absolute;
+    top: -1.2rem;
+    left: 50%;
+    transform: translate(-50%,0%);      /*transform CSS 屬性可以讓你修改 CSS 可視化格式模型（visual formatting model）的空間維度。使用此屬性，元素可以被平移、旋轉、縮放和傾斜。*/
+    width: 0.8rem;
+    height: 0.8rem;
+
+
+    background-image: url('./assets/stars-3.png');
+    background-size: 100% 100%;
+}
+
+
+
+.hidden {
+    display: none;
+}
+
+
+
+
+.display-block {
+    display: block;
+  }
+
+  .transparent {    /*透明*/
+    opacity: 0.5;
+  }
+
+  .disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+
+  
+  .large-on-hover {
+    /* opacity: 0.3; */
+    transform: scale(1);
+  }
+  .large-on-hover:hover {
+    /* opacity: 1; */
+    transform: scale(1.05);
+  }
+  .large-on-hover-micro {       /*窗戶*/
+    /* opacity: 0.3; */
+    transform: scale(1);
+  }
+
+  
+  #clock-text {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    /* padding: 0.7rem 0 0 0.3rem; */
+    color: var(--bright-green);
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.6rem;
+    font-size: auto; 
+  }
+  
+  
+  #time-progress {      /*??*/
+    width: 100%;
+  }
+  .nes-progress {
+    width: auto;
+    height: 15px;
+    color: var(--text-color);
+  }
+
+  
+  #warning-overlay {
+    display: none;
+  }
+
+  
+
+  input[type='range']::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #ffffff;
+    border: 0px solid #000000;
+    height: var(--input-thumb-size);
+    width: var(--input-thumb-size);
+    border-radius: 0px;
+    background: #000000;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+
+
+  
+  #buttons-div {
+    display: none;
+  }
+
+  
+  footer {
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  #info-div p,
+#info-div a {
+  font-size: 0.6rem;
+  margin: 0;
+  padding: 0;
+  padding-left: 0;
+}
+
+
+
+
+
+
+#youtube-div {
+    display: none;
+    color: var(--text-color);
+    position: absolute;
+    right: 10%;
+    top: 5%;
+    width: 30%;
+    max-width: 500px;
+    height: 20%;
+  
+    /* padding: 1rem; */
+    border: solid var(--text-color) var(--border-width);
+    background-color: white;
+    z-index: 5;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+
+
+
+#bubble-div {
+    display: none;
+    position: absolute;
+    padding: 0.1rem;
+    bottom: 90%;
+    left: 65%;
+    width: 5rem;
+    z-index: 2;
+  font-size: 0.5rem;
+}
+
+
+
+
+
+
+.blink {           
+    animation-name: blink;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes blink {    /*@keyframes後面要先輸入剛剛在div當中所寫的animation-name，然後就可以在"{ }"內設定要執行動畫的效果。*/
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @media only screen and (max-width: 830px) {
+
+    :root {
+        --input-thumb-size: 8px;
+        --border-width: 5px;
+      }
+
+      body {
+        padding: 0.8rem;
+      }
+
+
+
+
+
+
+
+      #control-div .block {
+        margin: 5px 8px 5px 0;
+        padding: 2px;
+        min-width: 150px;
+        min-height: 90px;
+      }
+    
+
+
+
+
+ #warning-overlay {
+     display: grid;
+     place-items: center;
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-color: rgba(0,0,0,0.9);
+     z-index: 6;
+ }
+ #warning-div {
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem 1rem;
+  }
+  #warning-div p {
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+  #warning-div div {
+    padding: 0;
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  button {
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  .panel {
+    padding: 1rem 1.5rem;
+  }
+
+  .panel h3 {
+    font-size: 0.6rem;
+  }
+
+  .panel label {        /*拉條*/
+    min-width: 3rem;
+    margin-right: 0.2rem;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #melody-panel {
+    width: 70%;
+  }
+
+  .melody-panel-button {
+    font-size: 1rem;
+  }
+
+  #melody-panel-close {
+    padding: 0.3rem;
+  }
+
+  #info h3 {
+    font-size: 0.6rem;
+    margin-top: 0;
+  }
+
+
+  #info-div p,
+  #info-div a {
+    font-size: 0.5rem;
+    margin: 0;
+    padding: 0;
+    padding-left: 0;
+  }
+
+  footer {
+    margin-top: 0.2rem;
+  }
+
+
+  input[type='range']::-webkit-slider-thumb {
+    box-shadow: 0px 0px 0px #ffffff;
+    border: 0px solid #000000;
+    height: var(--input-thumb-size-small);
+    width: var(--input-thumb-size-small);
+    border-radius: 0px;
+    background: #000000;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+
+  input[type='range']::-moz-range-thumb {
+    box-shadow: 0px 0px 0px #ffffff;
+    border: 0px solid #000000;
+    height: var(--input-thumb-size-small);
+    width: var(--input-thumb-size-small);
+    border-radius: 0px;
+    background: #000000;
+    cursor: pointer;
+  }
+
+  input[type='range']::-ms-thumb {
+    margin-top: 1px;
+    box-shadow: 0px 0px 0px #ffffff;
+    border: 0px solid #000000;
+    height: var(--input-thumb-size-small);
+    width: var(--input-thumb-size-small);
+    border-radius: 0px;
+    background: #000000;
+    cursor: pointer;
+  }
+
+
+
+
+
+
+
+
+  #shareButtonDiv {
+    position: absolute;
+    z-index: 4;
+    right: 0;
+    top: 0;
+    width: 3.4rem;
+  }
+
+  #shareButton {
+    width: 3rem;
+    height: 1.5rem;
+    font-size: 0.4rem;
+    padding: 0;
+  }
+
+
+
+
+
+}
+
+
+
+  @media screen and (min-width: 1000px) {
+    #container {
+      width: 85%;
+      max-width: 1500px;
+    }
+  }
+
+
+
+
+
+
+  @media screen and (orientation:landscape) and (max-width: 830px) {
+
+    #container {
+      width: 75%;
+    }
+  
+    #clock-text {
+      top: 15%;
+    }
+  
+    #board-input {
+      font-size: 0.4rem;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #melody-panel-close {
+    padding: 0.3rem;
+  }
+
+
+
+
